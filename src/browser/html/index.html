@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>RetrOS</title>
+    <title>RETROS</title>
     <style>
       html {
         height: 100%;
@@ -30,7 +30,7 @@
     <canvas></canvas>
     <script>
       require('babel-register');
-      var start = require('./lib').default;
+      var start = require('../renderLoop').default;
       var canvas = document.querySelector('canvas');
       start(canvas);
     </script>
