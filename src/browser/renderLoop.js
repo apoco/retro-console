@@ -1,4 +1,5 @@
 import frames from './streams/window/animationFrames';
+import input from './streams/io/input';
 import resizes from './streams/window/resizes';
 
 export default function start(canvas) {
@@ -17,4 +18,8 @@ export default function start(canvas) {
     gl.depthFunc(gl.LEQUAL);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
   });
+
+  input.onValue(input => {
+    alert('Got character ' + input);
+  })
 }
