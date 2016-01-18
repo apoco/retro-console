@@ -1,4 +1,8 @@
-import ipc from 'ipc';
-import { fromEvents } from 'kefir';
+import { ipcRenderer as ipc } from 'electron';
+import { stream } from 'kefir';
 
-export default fromEvents(ipc, 'input');
+export default function input(channel) {
+  return stream(emitter => {
+    ipc.on(channel, (evt, ch) => emitter.emit(ch));
+  });
+}

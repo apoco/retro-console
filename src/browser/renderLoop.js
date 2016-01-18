@@ -1,5 +1,5 @@
 import frames from './streams/window/animationFrames';
-import input from './streams/io/input';
+import stdout from './streams/shell/stdout';
 import resizes from './streams/window/resizes';
 
 export default function start(canvas) {
@@ -11,15 +11,12 @@ export default function start(canvas) {
     canvas.height = height;
   });
 
-  const gl = canvas.getContext('webgl');
+  const ctx = canvas.getContext('2d');
   frames(window).onValue(() => {
-    gl.clearColor(Math.random(), Math.random(), Math.random(), 1.0);
-    gl.enable(gl.DEPTH_TEST);
-    gl.depthFunc(gl.LEQUAL);
-    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
   });
 
-  input.onValue(input => {
-    alert('Got character ' + input);
-  })
+  stdout.onValue(ch => {
+    console.log('Got character', ch);
+  });
 }

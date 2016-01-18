@@ -1,4 +1,4 @@
 import { fromEvents } from 'kefir';
-import starts from './starts';
+import electronApp from './';
 
-export default starts.flatMap(app => fromEvents(app, 'window-all-closed').map(() => app));
+export default electronApp.flatMap(app => fromEvents(app, 'window-all-closed').map(() => app));

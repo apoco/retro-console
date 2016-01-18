@@ -1,16 +1,32 @@
 import { combine } from 'kefir';
 
-import windowLoaded from './streams/window/loaded';
-import input from './streams/io/input';
-import exits from './streams/electron/exits';
+import electron from './streams/electron';
+import window from './streams/window';
+import shell from './streams/pty';
+import stdout from './streams/pty/stdout';
+import exits from './streams/app/exits';
 
 export default function start() {
 
-  combine([windowLoaded, input]).onValue(([window, input]) => {
-    window.webContents.send('input', input);
-  });
+  combine([electron, window, shell]).onValue(([app, window, shell]) => {
 
-  if (process.platform !== 'darwin') {
-    exits.onValue(app => app.quit());
-  }
+    exits.take(1).onValue(() => {
+      shell.kill('SIGTERM');
+      app.quit(0);
+    });
+
+    stdout
+      .takeUntilBy(exits)
+      .onValue(data => {
+        window.webContents.send('stdout', data)
+      });
+    /*
+    stderr
+      .takeUntilBy(exits)
+      .onValue(data => {
+        console.log('Sending error content', data);
+        window.webContents.send('stderr', data)
+      });
+    */
+  });
 }
