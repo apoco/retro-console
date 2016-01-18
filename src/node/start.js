@@ -1,17 +1,17 @@
 import { combine } from 'kefir';
-
 import electron from './streams/electron';
 import window from './streams/window';
-import shell from './streams/pty';
+import pty from './streams/pty';
 import stdout from './streams/pty/stdout';
+import stdin from './streams/window/stdin';
 import exits from './streams/app/exits';
 
 export default function start() {
 
-  combine([electron, window, shell]).onValue(([app, window, shell]) => {
+  combine([electron, window, pty]).onValue(([app, window, pty]) => {
 
     exits.take(1).onValue(() => {
-      shell.kill('SIGTERM');
+      pty.kill('SIGTERM');
       app.quit(0);
     });
 
@@ -20,13 +20,10 @@ export default function start() {
       .onValue(data => {
         window.webContents.send('stdout', data)
       });
-    /*
-    stderr
-      .takeUntilBy(exits)
-      .onValue(data => {
-        console.log('Sending error content', data);
-        window.webContents.send('stderr', data)
-      });
-    */
+
+    stdin.onValue(ch => {
+      console.log('Got', ch);
+      pty.write(ch);
+    });
   });
 }
