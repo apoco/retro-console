@@ -1,5 +1,11 @@
+import { scan } from 'kefir';
+import { assign, defaults } from 'lodash';
 import transform from '../../../common/streams/transform';
-import printables from '../tty/output/printables';
+import output from '../tty/output';
+
+import printable from './handlers/printable';
+import CUB from './handlers/CUB';
+import EL from './handlers/EL';
 
 const initialState = {
   size: { rows: 25, cols: 80 },
@@ -7,37 +13,16 @@ const initialState = {
   chars: []
 };
 
-export default transform(initialState,
-  printables, (state, character) => {
-    const { pos, size: { rows, cols }, chars } = state;
-    let { row, col } = pos;
+const handlers = { printable, CUB, EL };
 
-    const newChars = Object.assign([], chars, {
-      [row]: Object.assign([], chars[row] || [], { [col]: character })
-    });
-
-    col++;
-    while (col >= cols) {
-      row++;
-      col = 0;
-    }
-
-    const scrollLines = Math.max(0, row - rows + 1);
-
-    const newState = {
-      size: {
-        rows,
-        cols
-      },
-      pos: {
-        row: Math.min(row, rows - 1),
-        col: col % cols
-      },
-      chars: newChars.slice(scrollLines)
-    };
-
-    console.log('Got', character, character.charCodeAt(0), 'new state', newState);
-
+export default output.scan((state, e) => {
+  const handler = handlers[e.type];
+  if (handler) {
+    const newState = handler(state, e);
+    console.log('newState', newState);
     return newState;
   }
-);
+
+  console.error('Unsupported control code', e.type);
+  return state;
+}, initialState);

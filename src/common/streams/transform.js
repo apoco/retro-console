@@ -3,10 +3,9 @@ import { never, scan } from 'kefir';
 export default function transform(initialValue, ...transformers) {
   let transformerStream = never();
 
-  // Fuck you babel; you don't work. Cannot use ...transformers
-  for (let i = 1; i < arguments.length; i += 2) {
-    const eventStream = arguments[i];
-    const transform = arguments[i + 1];
+  for (let i = 0; i < transformers.length; i += 2) {
+    const eventStream = transformers[i];
+    const transform = transformers[i + 1];
     transformerStream = transformerStream.merge(eventStream.map(event => [event, transform]));
   }
 

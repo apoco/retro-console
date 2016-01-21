@@ -1,3 +1,3 @@
-import characters from './';
+import output from './';
 
-export default characters.filter(ch => (ch >= '\u0020' && ch < '\u007f') || ch >= '\u00a0');
+export default output.filter(e => e.type === 'printable').map(e => e.character);

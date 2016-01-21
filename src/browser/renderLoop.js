@@ -4,6 +4,7 @@ import frames from './streams/window/animationFrames';
 import resizes from './streams/window/resizes';
 import charGrid from './streams/display/charGrid';
 import keyPresses from './streams/window/keyPresses';
+import output from './streams/tty/output';
 
 export default function start(canvas) {
 
@@ -28,7 +29,12 @@ export default function start(canvas) {
     });
   });
 
-  keyPresses(window).map(e => String.fromCharCode(e.charCode)).onValue(ch => {
+  keyPresses(window).onValue(ch => {
+    console.log('Sending', ch);
     ipc.send('stdin', ch);
+  });
+
+  output.onError(err => {
+    console.error(err.stack);
   });
 }

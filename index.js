@@ -1,2 +1,1 @@
-require('babel-register');
-require('./src/node/start').default.call();
+require('./lib/node/start').default.call();

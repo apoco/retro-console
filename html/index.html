@@ -30,8 +30,7 @@
   <body>
     <canvas></canvas>
     <script>
-      require('babel-register');
-      var start = require('../renderLoop').default;
+      var start = require('../lib/browser/renderLoop').default;
       var canvas = document.querySelector('canvas');
       start(canvas);
     </script>
