@@ -22,7 +22,6 @@ export default function start() {
       });
 
     stdin.onValue(ch => {
-      console.log('Got', ch, ch.charCodeAt(0));
       pty.write(ch);
     });
   });

@@ -4,8 +4,14 @@ import transform from '../../../common/streams/transform';
 import output from '../tty/output';
 
 import printable from './handlers/printable';
+import CR from './handlers/CR';
 import CUB from './handlers/CUB';
+import CUF from './handlers/CUF';
+import CUP from './handlers/CUP';
+import ED from './handlers/ED';
 import EL from './handlers/EL';
+import LF from './handlers/LF';
+import SGR from './handlers/SGR';
 
 const initialState = {
   size: { rows: 25, cols: 80 },
@@ -13,16 +19,16 @@ const initialState = {
   chars: []
 };
 
-const handlers = { printable, CUB, EL };
+const handlers = { printable, CR, CUB, CUF, CUP, ED, EL, LF, SGR };
 
 export default output.scan((state, e) => {
-  const handler = handlers[e.type];
+  const { type: code, params } = e;
+
+  const handler = handlers[code];
   if (handler) {
-    const newState = handler(state, e);
-    console.log('newState', newState);
-    return newState;
+    return handler(state, e);
   }
 
-  console.error('Unsupported control code', e.type);
+  console.error('Unsupported control code', code, params);
   return state;
 }, initialState);

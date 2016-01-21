@@ -12,7 +12,6 @@ export default function start(canvas) {
 
   const ctx = canvas.getContext('2d');
   resizes(window).onValue(({ width, height }) => {
-    console.log('resized', width, height);
     canvas.width = width;
     canvas.height = height;
   });
@@ -25,12 +24,11 @@ export default function start(canvas) {
     ctx.font = '20px monospace';
     ctx.textBaseline = 'top';
     grid.forEach((row = [], idx) => {
-      ctx.fillText(row.join(''), 0, idx * 20);
+      ctx.fillText(row.map(ch => ch || ' ').join(''), 0, idx * 20);
     });
   });
 
   keyPresses(window).onValue(ch => {
-    console.log('Sending', ch);
     ipc.send('stdin', ch);
   });
 

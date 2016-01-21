@@ -1,26 +1,15 @@
-import { defaults } from 'lodash';
+import { defaultsDeep } from 'lodash';
+
+import moveRight from './moveRight';
 
 export default function handlePrintable(state, { character }) {
-  const { pos, size: { cols, rows }, chars } = state;
-  let { row, col } = pos;
+  const { pos: { row, col }, size: { cols, rows }, chars = [] } = state;
 
-  const newChars = Object.assign([], chars, {
-    [row]: Object.assign([], chars[row] || [], { [col]: character })
-  });
+  const newRows = [];
+  const newCols = [];
+  newRows[row] = newCols;
+  newCols[col] = character;
 
-  col++;
-  while (col >= cols) {
-    row++;
-    col = 0;
-  }
-
-  const scrollLines = Math.max(0, row - rows + 1);
-
-  return defaults({
-    pos: {
-      row: Math.min(row, rows - 1),
-      col: col % cols
-    },
-    chars: newChars.slice(scrollLines)
-  }, state);
+  const newState = defaultsDeep({ chars: newRows }, state);
+  return moveRight(newState, 1);
 };
