@@ -5,6 +5,7 @@ import resizes from './streams/window/resizes';
 import charGrid from './streams/display/charGrid';
 import keyPresses from './streams/window/keyPresses';
 import output from './streams/tty/output';
+import bells from './streams/audio/bells';
 
 export default function start(canvas) {
 
@@ -26,6 +27,11 @@ export default function start(canvas) {
     grid.forEach((row = [], idx) => {
       ctx.fillText(row.map(ch => ch || ' ').join(''), 0, idx * 20);
     });
+  });
+
+  const bellAudio = document.querySelector('#audio-bel');
+  bells.onValue(() => {
+    bellAudio.play();
   });
 
   keyPresses(window).onValue(ch => {
