@@ -4,6 +4,7 @@ import window from './streams/window';
 import pty from './streams/pty';
 import stdout from './streams/pty/stdout';
 import stdin from './streams/window/stdin';
+import resizes from './streams/window/resizes';
 import exits from './streams/app/exits';
 
 export default function start() {
@@ -24,5 +25,9 @@ export default function start() {
     stdin.onValue(ch => {
       pty.write(ch);
     });
+
+    resizes.onValue(({ cols, rows }) => {
+      pty.resize(cols, rows);
+    })
   });
 }

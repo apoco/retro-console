@@ -1,7 +1,8 @@
-import { scan } from 'kefir';
+import { merge, scan } from 'kefir';
 import { assign, defaults } from 'lodash';
-import transform from '../../../common/streams/transform';
-import output from '../tty/output';
+
+import output from '../stdout';
+import resizes from './resizes';
 import handlers from './handlers';
 
 const initialState = {
@@ -10,7 +11,7 @@ const initialState = {
   chars: []
 };
 
-export default output.scan((state, e) => {
+export default merge([output, resizes]).scan((state, e) => {
   const { type: code, params } = e;
 
   const handler = handlers[code];

@@ -1,4 +1,4 @@
-import controlFunctions from '../../../../../common/constants/controlFunctions';
+import controlFunctions from '../../../../common/constants/controlFunctions';
 import initialHandler from './initial';
 import c1ControlCode from './c1ControlCode';
 

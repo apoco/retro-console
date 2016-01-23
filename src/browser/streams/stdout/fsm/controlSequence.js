@@ -1,5 +1,5 @@
 import initialState from './initial';
-import controlSequences from '../../../../../common/constants/controlSequences';
+import controlSequences from '../../../../common/constants/controlSequences';
 
 export default function controlSequenceHandler(state = {}, charCode, emitter) {
   const { params = [], bytes = [] } = state;

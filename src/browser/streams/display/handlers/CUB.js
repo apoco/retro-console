@@ -1,14 +1,5 @@
-import { defaults } from 'lodash';
+import moveLeft from './moveLeft';
 
-export default function handleCUB (state) {
-  const { pos: { row, col }, size: { cols } } = state;
-
-  let newCol = col - 1;
-  let newRow = row;
-  while (newCol < 0) {
-    newRow = Math.max(0, row - 1);
-    newCol += cols;
-  }
-
-  return defaults({ pos: { row: newRow, col: newCol }}, state);
+export default function handleCUB (state, { params: [count = 1] = [] }) {
+  return moveLeft(state, count);
 };

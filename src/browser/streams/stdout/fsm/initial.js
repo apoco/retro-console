@@ -1,7 +1,7 @@
 import escapeSequence from './escapeSequence';
 import controlSequence from './controlSequence';
 import c1ControlCode from './c1ControlCode';
-import c0ControlCodes from '../../../../../common/constants/c0ControlCodes';
+import c0ControlCodes from '../../../../common/constants/c0ControlCodes';
 
 export default function handleInitialState(charCode, emitter) {
   if ((charCode >= 0x20 && charCode < 0x7f) || charCode >= 0xa0) {

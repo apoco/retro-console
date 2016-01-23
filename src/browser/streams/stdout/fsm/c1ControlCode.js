@@ -1,4 +1,4 @@
-import c1Codes from '../../../../../common/constants/c1ControlCodes';
+import c1Codes from '../../../../common/constants/c1ControlCodes';
 import controlSequence from './controlSequence';
 import initialState from './initial';
 
