@@ -4,12 +4,17 @@ import { ipcRenderer as ipc } from 'electron';
 import frames from './streams/window/animationFrames';
 import windowResizes from './streams/window/resizes';
 
-import charGrid from './streams/display/charGrid';
+import fontSize from './streams/display/fontSize';
+import glyphGrid from './streams/display/glyphGrid';
 import bells from './streams/audio/bells';
 import keyPresses from './streams/window/keyPresses';
 import terminalResizes from './streams/display/resizes';
 
 import stdin from './streams/stdin';
+
+const bpp = 4;
+const greenOffset = 1;
+const opacityOffset = 3;
 
 export default function start(canvas) {
 
@@ -21,15 +26,27 @@ export default function start(canvas) {
   });
 
   const ctx = canvas.getContext('2d');
-  combine([frames(window)], [charGrid]).onValue(([, { chars: grid }]) => {
-    ctx.fillStyle = '#000';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    ctx.fillStyle = '#0f0';
-    ctx.font = '20px monospace';
-    ctx.textBaseline = 'top';
-    grid.forEach((row = [], idx) => {
-      ctx.fillText(row.map(ch => ch || ' ').join(''), 0, idx * 20);
+  ctx.fillStyle = '#000';
+
+  const greenPixel = ctx.createImageData(1, 1);
+  greenPixel.data[greenOffset] = 0xff;
+  greenPixel.data[opacityOffset] = 0xff;
+
+  combine([frames(window)], [glyphGrid]).onValue(([, grid]) => {
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    grid.forEach((row = [], rowIdx) => {
+      row.forEach((char = [], colIdx) => {
+        char.forEach((scanLine = 0, scanLineIdx) => {
+          for (var i = 0; i < fontSize.width; i++) {
+            const x = colIdx * fontSize.width + i;
+            const y = rowIdx * fontSize.height + scanLineIdx * 2;
+            if ((scanLine >> i) & 1) {
+              ctx.putImageData(greenPixel, x, y);
+            }
+          }
+        });
+      });
     });
   });
 
