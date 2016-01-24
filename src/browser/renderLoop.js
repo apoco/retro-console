@@ -5,7 +5,7 @@ import frames from './streams/window/animationFrames';
 import windowResizes from './streams/window/resizes';
 
 import fontSize from './streams/display/fontSize';
-import glyphGrid from './streams/display/glyphGrid';
+import pixels from './streams/display/pixels';
 import bells from './streams/audio/bells';
 import keyPresses from './streams/window/keyPresses';
 import terminalResizes from './streams/display/resizes';
@@ -33,22 +33,13 @@ export default function start(canvas) {
   greenPixel.data[greenOffset] = 0xff;
   greenPixel.data[opacityOffset] = 0xff;
 
-  combine([frames(window)], [glyphGrid]).onValue(([, grid]) => {
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    grid.forEach((row = [], rowIdx) => {
-      row.forEach((char = [], colIdx) => {
-        char.forEach((scanLine = 0, scanLineIdx) => {
-          for (var i = 0; i < fontSize.width; i++) {
-            const x = colIdx * fontSize.width + i;
-            const y = rowIdx * fontSize.height + scanLineIdx * 2;
-            if ((scanLine >> i) & 1) {
-              ctx.putImageData(greenPixel, x, y);
-            }
-          }
-        });
-      });
+  pixels
+    .sampledBy(frames(window))
+    .skipDuplicates()
+    .onValue(pixels => {
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      pixels.forEach(({ x, y }) => ctx.putImageData(greenPixel, x, y));
     });
-  });
 
   const bellAudio = document.querySelector('#audio-bel');
   bells.onValue(() => {
