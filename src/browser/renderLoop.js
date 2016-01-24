@@ -5,10 +5,11 @@ import frames from './streams/window/animationFrames';
 import windowResizes from './streams/window/resizes';
 
 import fontSize from './streams/display/fontSize';
-import pixels from './streams/display/pixels';
+import pixels from './streams/display/glyphPixels';
 import bells from './streams/audio/bells';
 import keyPresses from './streams/window/keyPresses';
 import terminalResizes from './streams/display/resizes';
+import cursor from './streams/display/cursor';
 
 import stdin from './streams/stdin';
 
@@ -25,21 +26,31 @@ export default function start(canvas) {
     canvas.height = size.height;
   });
 
-  const ctx = canvas.getContext('2d');
+  const blinkRate = 1000;
 
-  ctx.fillStyle = '#000';
+  const ctx = canvas.getContext('2d');
 
   const greenPixel = ctx.createImageData(1, 1);
   greenPixel.data[greenOffset] = 0xff;
   greenPixel.data[opacityOffset] = 0xff;
 
-  pixels
-    .sampledBy(frames(window))
-    .skipDuplicates()
-    .onValue(pixels => {
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      pixels.forEach(({ x, y }) => ctx.putImageData(greenPixel, x, y));
+  combine([frames(window)], [pixels, cursor]).onValue(([frame, pixels = [], { row = 0, col = 0 } = {}]) => {
+    ctx.fillStyle = '#000';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    ctx.fillStyle = '#00ff00';
+    pixels.forEach(({ x, y }) => {
+      ctx.fillRect(x, y, 1, 1);
     });
+
+    if (Math.floor(Date.now() / blinkRate) % 2) {
+      const cursorX = col * fontSize.width;
+      const cursorY = row * fontSize.height;
+      for (let y = 0; y < fontSize.height; y += 2) {
+        ctx.fillRect(cursorX, cursorY + y, fontSize.width, 1);
+      }
+    }
+  });
 
   const bellAudio = document.querySelector('#audio-bel');
   bells.onValue(() => {
