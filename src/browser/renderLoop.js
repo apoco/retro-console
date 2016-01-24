@@ -5,7 +5,7 @@ import frames from './streams/window/animationFrames';
 import windowResizes from './streams/window/resizes';
 
 import fontSize from './streams/display/fontSize';
-import pixels from './streams/display/glyphPixels';
+import glyphGrid from './streams/display/glyphGrid';
 import bells from './streams/audio/bells';
 import keyPresses from './streams/window/keyPresses';
 import terminalResizes from './streams/display/resizes';
@@ -16,6 +16,7 @@ import stdin from './streams/stdin';
 const bpp = 4;
 const greenOffset = 1;
 const opacityOffset = 3;
+const blinkRate = 500;
 
 export default function start(canvas) {
 
@@ -26,24 +27,33 @@ export default function start(canvas) {
     canvas.height = size.height;
   });
 
-  const blinkRate = 1000;
-
-  const ctx = canvas.getContext('2d');
-
-  const greenPixel = ctx.createImageData(1, 1);
-  greenPixel.data[greenOffset] = 0xff;
-  greenPixel.data[opacityOffset] = 0xff;
-
-  combine([frames(window)], [pixels, cursor]).onValue(([frame, pixels = [], { row = 0, col = 0 } = {}]) => {
+  combine([frames(window)], [glyphGrid, cursor]).onValue(([frame, glyphRows, { row, col }]) => {
+    const ctx = canvas.getContext('2d');
     ctx.fillStyle = '#000';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    ctx.fillStyle = '#00ff00';
-    pixels.forEach(({ x, y }) => {
-      ctx.fillRect(x, y, 1, 1);
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    glyphRows.forEach((glyphs, row) => {
+      const glyphY = row * fontSize.height;
+      glyphs.forEach((scanLines, col) => {
+        const glyphX = col * fontSize.width;
+        scanLines.forEach((bits, line) => {
+          const y = glyphY + line * 2;
+          for (let i = 0; i < fontSize.width; i++) {
+            if (bits >> i & 1) {
+              const x = glyphX + i;
+              const pixelOffset = bpp * (x + y * canvas.width);
+              imageData.data[pixelOffset + greenOffset] = 0xff;
+              imageData.data[pixelOffset + opacityOffset] = 0xff;
+            }
+          }
+        });
+      });
     });
+    ctx.putImageData(imageData, 0, 0);
 
     if (Math.floor(Date.now() / blinkRate) % 2) {
+      ctx.fillStyle = '#00ff00';
       const cursorX = col * fontSize.width;
       const cursorY = row * fontSize.height;
       for (let y = 0; y < fontSize.height; y += 2) {

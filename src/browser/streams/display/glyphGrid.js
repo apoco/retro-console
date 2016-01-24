@@ -2,7 +2,6 @@ import charGrid from './charGrid';
 import glyphs from './glyphs';
 
 export default charGrid
-  .throttle(16)
   .map(cg => cg.chars)
   .skipDuplicates()
   .map((rows = []) => rows
