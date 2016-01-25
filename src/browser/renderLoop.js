@@ -29,10 +29,8 @@ export default function start(canvas) {
 
   combine([frames(window)], [glyphGrid, cursor]).onValue(([frame, glyphRows, { row, col }]) => {
     const ctx = canvas.getContext('2d');
-    ctx.fillStyle = '#000';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const imageData = ctx.createImageData(canvas.width, canvas.height);
     glyphRows.forEach((glyphs, row) => {
       const glyphY = row * fontSize.height;
       glyphs.forEach((scanLines, col) => {
