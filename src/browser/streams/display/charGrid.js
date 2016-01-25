@@ -17,7 +17,6 @@ export default merge([output, resizes]).scan((state, e) => {
 
   const handler = handlers[code];
   if (handler) {
-    console.log(code, params || e.character);
     return handler(state, e);
   } else {
     console.error('Unsupported control code', code, params);

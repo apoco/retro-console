@@ -3,6 +3,7 @@ import glyphs from './glyphs';
 
 export default charGrid
   .map(cg => cg.chars)
+  .throttle(16)
   .skipDuplicates()
   .map((rows = []) => rows
     .map((row = []) => row
