@@ -1,5 +1,6 @@
 import { defaults } from 'lodash';
 
+// Insert lines
 export default function handleIL(state, { params: [count = 1] = [] }) {
   const { pos: { row }, size: { rows }, chars } = state;
   return defaults({

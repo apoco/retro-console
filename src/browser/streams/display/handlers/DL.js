@@ -1,5 +1,6 @@
 import { defaults } from 'lodash';
 
+// Delete lines
 export default function handleDL(state, { params: [count = 1] = [] }) {
   const { chars, pos: { row } } = state;
 

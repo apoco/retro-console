@@ -1,5 +1,6 @@
 import { assign } from 'lodash';
 
+// Line feed
 export default function handleLF(state) {
   const { pos: { col, row }, size: { rows }, chars } = state;
   const newRow = row + 1;

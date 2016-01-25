@@ -1,9 +1,10 @@
 import { assign } from 'lodash';
 
-export default function handleEL(state, { params: [mode] }) {
+// Erase lines
+export default function handleEL(state, { params: [mode = 0] = [] }) {
   const { chars = [], pos: { col, row } } = state;
   const rowChars = chars[row] || [];
-  switch (mode || 0) {
+  switch (mode) {
     case 0:
       return assign({}, state, {
         chars: assign([], chars, {

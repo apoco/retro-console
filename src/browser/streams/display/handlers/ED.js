@@ -1,5 +1,6 @@
 import { defaults } from 'lodash';
 
+// Erase characters
 export default function handleED(state, { params: [mode = 0] = [] }) {
   const { chars, pos: { row, col } } = state;
   const rowChars = chars[row] = [];

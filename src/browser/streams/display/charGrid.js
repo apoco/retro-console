@@ -8,6 +8,7 @@ import handlers from './handlers';
 const initialState = {
   size: { rows: 25, cols: 80 },
   pos: { row: 0, col: 0 },
+  lastChar: null,
   chars: []
 };
 
@@ -16,9 +17,10 @@ export default merge([output, resizes]).scan((state, e) => {
 
   const handler = handlers[code];
   if (handler) {
+    console.log(code, params || e.character);
     return handler(state, e);
+  } else {
+    console.error('Unsupported control code', code, params);
+    return state;
   }
-
-  console.error('Unsupported control code', code, params);
-  return state;
 }, initialState);

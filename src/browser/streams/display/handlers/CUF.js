@@ -1,6 +1,6 @@
 import moveRight from './moveRight';
 
-export default function handleCUF(state, { params = [] }) {
-  const [count = 1] = params;
+// Move the cursor right (forward)
+export default function handleCUF(state, { params: [count = 1] = [] }) {
   return moveRight(state, count);
 }

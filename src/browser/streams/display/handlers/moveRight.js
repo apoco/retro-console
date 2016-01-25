@@ -1,18 +1,14 @@
-import { defaults } from 'lodash';
+import { defaultsDeep } from 'lodash';
+
+import moveDown from './moveDown';
 
 export default function moveRight(state, count = 1) {
-  const { pos: { col, row }, size: { rows, cols }, chars = [] } = state;
+  const { pos: { col }, size: { cols } } = state;
 
   const newCol = col + count;
-  const rowsToAdvance = Math.floor(newCol / cols);
-  const newRow = row + rowsToAdvance;
-  const scrollLines = Math.max(0, newRow - rows + 1);
-
-  return defaults({
-    pos: {
-      row: Math.min(newRow, rows - 1),
-      col: newCol % cols
-    },
-    chars: chars.slice(scrollLines)
+  const newState = defaultsDeep({
+    pos: { col: newCol % cols }
   }, state);
+
+  return moveDown(newState, Math.floor(newCol / cols));
 }
