@@ -1,3 +1,3 @@
-import ttyOutput from '../tty/output';
+import stdout from '../stdout';
 
-export default ttyOutput.filter(e => e.type === 'BEL');
+export default stdout.filter(({ type }) => type === 'BEL');

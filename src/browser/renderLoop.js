@@ -4,7 +4,7 @@ import { ipcRenderer as ipc } from 'electron';
 import frames from './streams/window/animationFrames';
 import windowResizes from './streams/window/resizes';
 
-import fontSize from './streams/display/fontSize';
+import fontSize from './../common/constants/fontSize';
 import glyphGrid from './streams/display/glyphGrid';
 import bells from './streams/audio/bells';
 import keyPresses from './streams/window/keyPresses';

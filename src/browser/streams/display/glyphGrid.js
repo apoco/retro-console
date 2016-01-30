@@ -1,5 +1,5 @@
 import charGrid from './charGrid';
-import glyphs from './glyphs';
+import glyphs from './../../../common/constants/glyphs';
 
 export default charGrid
   .map(cg => cg.chars)

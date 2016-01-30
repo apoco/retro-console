@@ -1,5 +1,5 @@
 import windowResizes from '../window/resizes';
-import fontSize from './fontSize';
+import fontSize from './../../../common/constants/fontSize';
 
 export default windowResizes(window).map(({ width, height }) => {
   return {
