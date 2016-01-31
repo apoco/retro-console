@@ -16,8 +16,6 @@ const initialState = {
 export default merge([output, resizes]).scan((state, e) => {
   const { type: code, params } = e;
 
-  console.log(code, params, e.character);
-
   const handler = handlers[code];
   if (handler) {
     return handler(state, e);
