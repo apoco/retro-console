@@ -8,12 +8,15 @@ import handlers from './handlers';
 const initialState = {
   size: { rows: 25, cols: 80 },
   pos: { row: 0, col: 0 },
+  modes: 0,
   lastChar: null,
   chars: []
 };
 
 export default merge([output, resizes]).scan((state, e) => {
   const { type: code, params } = e;
+
+  console.log(code, params, e.character);
 
   const handler = handlers[code];
   if (handler) {

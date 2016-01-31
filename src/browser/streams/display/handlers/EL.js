@@ -14,7 +14,7 @@ export default function handleEL(state, { params: [mode = 0] = [] }) {
     case 1:
       return assign({}, state, {
         chars: assign([], chars, {
-          [row]: new Array(col + 1).join(' ').concat(rowChars.slice(col + 1))
+          [row]: new Array(col).concat(rowChars.slice(col + 1))
         })
       });
     case 2:

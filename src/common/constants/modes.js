@@ -1,0 +1,22 @@
+export default {
+  GATM:  1,
+  KAM:   2,
+  CRM:   3,
+  IRM:   4,
+  SRTM:  5,
+  ERM:   6,
+  VEM:   7,
+  BDSM:  8,
+  DCSM:  9,
+  HEM:  10,
+  PUM:  11,
+  SRM:  12,
+  FEAM: 13,
+  FETM: 14,
+  MATM: 15,
+  TTM:  16,
+  SATM: 17,
+  TSM:  18,
+  GRCM: 21,
+  ZDM:  22
+};

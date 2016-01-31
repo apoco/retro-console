@@ -1,4 +1,4 @@
-import charGrid from './charGrid';
+import charGrid from './state';
 import glyphs from './../../../common/constants/glyphs';
 
 export default charGrid

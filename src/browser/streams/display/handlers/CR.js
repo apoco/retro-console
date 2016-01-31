@@ -1,10 +1,5 @@
-import { defaultsDeep } from 'lodash';
+import moveToHome from './moveToHome';
 
-// Move to the first column
 export default function handleCR(state) {
-  return defaultsDeep({
-    pos: {
-      col: 0
-    }
-  }, state);
+  return moveToHome(state);
 }
