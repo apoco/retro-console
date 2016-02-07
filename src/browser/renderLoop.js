@@ -5,7 +5,7 @@ import frames from './streams/window/animationFrames';
 import windowResizes from './streams/window/resizes';
 
 import fontSize from './../common/constants/fontSize';
-import glyphGrid from './streams/display/glyphGrid';
+import bitmap from './streams/display/bitmap';
 import bells from './streams/audio/bells';
 import keyPresses from './streams/window/keyPresses';
 import terminalResizes from './streams/display/resizes';
@@ -27,28 +27,11 @@ export default function start(canvas) {
     canvas.height = size.height;
   });
 
-  combine([frames(window)], [glyphGrid, cursor]).onValue(([frame, glyphRows, { row, col }]) => {
-    const ctx = canvas.getContext('2d');
+  const ctx = canvas.getContext('2d');
 
-    const imageData = ctx.createImageData(canvas.width, canvas.height);
-    glyphRows.forEach((glyphs, row) => {
-      const glyphY = row * fontSize.height;
-      glyphs.forEach((scanLines, col) => {
-        const glyphX = col * fontSize.width;
-        scanLines.forEach((bits, line) => {
-          const y = glyphY + line * 2;
-          for (let i = 0; i < fontSize.width; i++) {
-            if (bits >> i & 1) {
-              const x = glyphX + i;
-              const pixelOffset = bpp * (x + y * canvas.width);
-              imageData.data[pixelOffset + greenOffset] = 0xff;
-              imageData.data[pixelOffset + opacityOffset] = 0xff;
-            }
-          }
-        });
-      });
-    });
-    ctx.putImageData(imageData, 0, 0);
+  combine([frames(window)], [bitmap(ctx), cursor]).onValue(([frame, bitmap, { row, col }]) => {
+
+    ctx.putImageData(bitmap, 0, 0);
 
     if (Math.floor(Date.now() / blinkRate) % 2) {
       ctx.fillStyle = '#00ff00';
